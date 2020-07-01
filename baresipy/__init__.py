@@ -25,8 +25,7 @@ class BareSIP(Thread):
             self.tts = tts
         else:
             self.tts = ResponsiveVoice(gender=ResponsiveVoice.MALE)
-        self._login = "sip:{u}@{g};auth_pass={p}".format(u=self.user, p=self.pwd,
-                                               g=self.gateway)
+        self._login = "sip:{u}@{g};auth_pass={p}".format(u=self.user, p=self.pwd, g=self.gateway)
         self._prev_output = ""
         self.running = False
         self.ready = False
@@ -67,6 +66,10 @@ class BareSIP(Thread):
     def call(self, number):
         LOG.info("Dialling: " + number)
         self.do_command("/dial " + number)
+
+    def enable_recording(self):
+        LOG.info("Enabling call recording")
+        self.do_command("/insmod sndfile")
 
     def hang(self):
         if self.current_call:
