@@ -128,6 +128,30 @@ class BareSIP(Thread):
         sleep(0.1)
         return self.call_status
 
+    @staticmethod
+    def get_contacts(config_dir):
+        # TODO: get default config dir
+        """
+        Read contacts and active_contact from config dir
+        :param config_dir: baresip configration directory (default ~/.baresip)
+        :return: (list) all_contacts(dict), current_contact(str)
+        """
+
+        with open(f"{config_dir}/current_contact") as cur:
+            cur_con = cur.readline()
+        with open(f"{config_dir}/contacts") as cons:
+            raw = cons.readlines()
+        contacts_list = []
+        for line in raw:
+            if not line.startswith("#") and line != "\n":
+                contacts_list.append(line)
+        contacts = {}
+        for contact in contacts_list:
+            name = contact.split('"', 2)[1]
+            addr = contact.split('<', 1)[1].split('>', 1)[0]
+            contacts[name] = addr
+        return contacts, cur_con
+
     def quit(self):
         LOG.info("Exiting")
         if self.running:
