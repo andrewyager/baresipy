@@ -24,7 +24,7 @@ class ContactList:
             lines = f.readlines()
 
         for line in lines:
-            if line.startswith("#"):
+            if line.startswith("#") or line == "\n":
                 continue
             user, address = line.split("<")
             user = user.replace('"', "")
