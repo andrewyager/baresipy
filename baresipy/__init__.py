@@ -25,7 +25,8 @@ class BareSIP(Thread):
             self.tts = tts
         else:
             self.tts = ResponsiveVoice(gender=ResponsiveVoice.MALE)
-        self._login = "sip:{u}@{g};auth_pass={p}".format(u=self.user, p=self.pwd, g=self.gateway)
+        self._login = "sip:{u}@{g};auth_pass={p}".format(u=self.user, p=self.pwd,
+                                               g=self.gateway)
         self._prev_output = ""
         self.running = False
         self.ready = False
@@ -66,10 +67,6 @@ class BareSIP(Thread):
     def call(self, number):
         LOG.info("Dialling: " + number)
         self.do_command("/dial " + number)
-
-    def enable_recording(self):
-        LOG.info("Enabling call recording")
-        self.do_command("/insmod sndfile")
 
     def hang(self):
         if self.current_call:
@@ -127,30 +124,6 @@ class BareSIP(Thread):
         self.do_command("/callstat")
         sleep(0.1)
         return self.call_status
-
-    @staticmethod
-    def get_contacts(config_dir):
-        # TODO: get default config dir
-        """
-        Read contacts and active_contact from config dir
-        :param config_dir: baresip configration directory (default ~/.baresip)
-        :return: (list) all_contacts(dict), current_contact(str)
-        """
-
-        with open(f"{config_dir}/current_contact") as cur:
-            cur_con = cur.readline()
-        with open(f"{config_dir}/contacts") as cons:
-            raw = cons.readlines()
-        contacts_list = []
-        for line in raw:
-            if not line.startswith("#") and line != "\n":
-                contacts_list.append(line)
-        contacts = {}
-        for contact in contacts_list:
-            name = contact.split('"', 2)[1]
-            addr = contact.split('<', 1)[1].split('>', 1)[0]
-            contacts[name] = addr
-        return contacts, cur_con
 
     def quit(self):
         LOG.info("Exiting")
