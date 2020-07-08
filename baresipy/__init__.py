@@ -406,10 +406,8 @@ class BareSIP(Thread):
                     elif str(out).startswith("sip:") and str(out).endswith('"'):
                         _, sender, message = str(out).split(':', 2)
                         sender = f"sip:{sender}"
-                        message = message.strip('"')
+                        message = message.strip().strip('"')
                         self.handle_text_message(sender, message)
-                        # TODO: Handle incoming text message here
-                        #       sip:d_mcknight@sip2sip.info: "yo."
                     self._prev_output = out
             except pexpect.exceptions.EOF:
                 # baresip exited
