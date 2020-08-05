@@ -17,14 +17,16 @@ logging.getLogger("pydub.converter").setLevel("WARN")
 
 class BareSIP(Thread):
     def __init__(
-        self, user, pwd, gateway, tts=None, config=None, debug=False, block=True
+        self, user, pwd, gateway, tts=None, options=None, debug=False, block=True
     ):
         self.debug = debug
         self.user = user
         self.pwd = pwd
         self.gateway = gateway
-        if self.config is None:
-            self.config = ""
+        if options:
+            self.options = options
+        else:
+            options = ""
         if tts:
             self.tts = tts
         else:
@@ -41,7 +43,7 @@ class BareSIP(Thread):
         self._call_status = None
         self.audio = None
         self._ts = None
-        self.baresip = pexpect.spawn("baresip {}".format(self.config))
+        self.baresip = pexpect.spawn("baresip {}".format(self.options))
         super().__init__()
         self.start()
         if block:
